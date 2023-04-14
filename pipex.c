@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 20:45:31 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/14 04:23:04 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/14 06:58:48 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,34 +34,24 @@ void	envp_path(t_pipe *p, char **envp)
 
 char	*command_path(t_pipe *p, char *command)
 {
-	if (access(command, F_OK) == 0)
+	if (command[0] == '.' || ft_strchr(command,'/') != NULL)
 	{
-		if (access(command, X_OK) == 0)
-			return (command);
-		else
-			exit(126);
+		if (access(command, F_OK) == 0)
+		{
+			if (access(command, X_OK) == 0)
+				return (command);
+			else
+				exit(126);
+		}
+		return (NULL);
 	}
 	return (real_command_path(p, command));
-}
-char *first_check(char *command)
-{
-	if (access(command, F_OK) == 0)
-	{
-		if (access(command, X_OK) == 0)
-			return (command);
-		else
-			exit(126);
-	}
-	return (NULL);
 }
 
 void	first_child(t_pipe *p, char **argv, int *pipes, char **envp)
 {
 	close(pipes[0]);
-	if (first_check(argv[2]) == NULL)
-		p->command1 = create_command(argv[2], p);
-	else
-		p->command1 = &argv[2];
+	p->command1 = create_command(argv[2], p);
 	p->fd1 = open_file(argv, 1);
 	if (dup2(pipes[1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
@@ -89,10 +79,7 @@ void	second_child(t_pipe *p, char **argv, int *pipes, char **envp)
 	if (dup2(p->fd2, STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->fd2);
-	if (first_check(argv[3]) == NULL)
-		p->command2 = create_command(argv[3], p);
-	else
-		p->command2 = &argv[3];
+	p->command2 = create_command(argv[3], p);
 	if (command_path(p, p->command2[0]) == NULL)
 	{
 		error_message(argv, "command not found", 3);
