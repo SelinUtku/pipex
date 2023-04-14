@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 20:45:31 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/14 06:58:48 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/14 17:07:09 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -51,7 +51,7 @@ char	*command_path(t_pipe *p, char *command)
 void	first_child(t_pipe *p, char **argv, int *pipes, char **envp)
 {
 	close(pipes[0]);
-	p->command1 = create_command(argv[2], p);
+	p->command1 = create_command(argv[2]);
 	p->fd1 = open_file(argv, 1);
 	if (dup2(pipes[1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
@@ -79,7 +79,7 @@ void	second_child(t_pipe *p, char **argv, int *pipes, char **envp)
 	if (dup2(p->fd2, STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->fd2);
-	p->command2 = create_command(argv[3], p);
+	p->command2 = create_command(argv[3]);
 	if (command_path(p, p->command2[0]) == NULL)
 	{
 		error_message(argv, "command not found", 3);
@@ -104,9 +104,9 @@ int main (int argc, char **argv, char **envp)
 	int		status;
 
 	// atexit(leaks);
-	p.c1_path = NULL;
-	p.c2_path = NULL;
-	p.path = NULL;
+	// p.c1_path = NULL;
+	// p.c2_path = NULL;
+	// p.path = NULL;
 	if (argc == 5)
 	{
 		envp_path(&p, envp);
