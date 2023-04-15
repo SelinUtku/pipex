@@ -6,7 +6,7 @@
 #    By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/09 20:49:06 by sutku             #+#    #+#              #
-#    Updated: 2023/04/12 23:43:04 by sutku            ###   ########.fr        #
+#    Updated: 2023/04/15 04:09:11 by sutku            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -68,8 +68,8 @@ fclean: clean
 	# $(RM) $(NAME_B)
 	echo "$(MAGENTA)Programs / Libraries are cleaned!"
 
-# bonus: all #$(NAME_B)
+bonus: all 
 	
 re: fclean all 
 
-.PHONY: all clean fclean re
+.PHONY: all clean fclean re bonus
