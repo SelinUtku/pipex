@@ -6,16 +6,16 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:43:22 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/14 17:14:31 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/16 01:25:45 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char *ft_strndup(char *str, int len)
+char	*ft_strndup(char *str, int len)
 {
-	int	i;
-	int	j;
+	int		i;
+	int		j;
 	char	*arr;
 
 	arr = malloc(sizeof(char) * (len + 1));
@@ -35,20 +35,18 @@ char *ft_strndup(char *str, int len)
 	arr[i] = '\0';
 	return (arr);
 }
+
 char	**create_command(char *str)
 {
 	int		i;
-	int		len;
 	int		pos;
 	int		word_counter;
 	char	**par_comm;
 
 	i = 0;
-	len = 0;
 	word_counter = 0;
 	while (str[i] != '\0')
 	{
-		len = 0;
 		if (str[i] == '\'' || str[i] == '\"')
 		{
 			word_counter++;
@@ -59,7 +57,6 @@ char	**create_command(char *str)
 				if (str[i] == '\\')
 					i++;
 				i++;
-				len++;
 			}
 			if (str[i] == pos)
 				i++;
@@ -72,7 +69,6 @@ char	**create_command(char *str)
 				if (str[i] == '\\')
 					i++;
 				i++;
-				len++;
 			}
 		}
 		while (str[i] == ' ' && str[i] != '\0')
@@ -132,4 +128,3 @@ char	**parse_command(char *str, char **par_comm)
 	par_comm[j] = NULL;
 	return (par_comm);
 }
-

@@ -6,13 +6,14 @@
 #    By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/09 20:49:06 by sutku             #+#    #+#              #
-#    Updated: 2023/04/15 04:09:11 by sutku            ###   ########.fr        #
+#    Updated: 2023/04/16 00:15:45 by sutku            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .SILENT:
 
-PIP_SRC		=	pipex.c pipex_utils.c parse.c
+PIP_SRC		=	pipex.c pipex_utils.c parse.c pipes_func.c child_process.c \
+				find_paths.c
 PIP_OBJ		=	$(PIP_SRC:.c=.o)
 
 # BONUS_SRC	=	
