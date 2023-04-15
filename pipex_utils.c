@@ -6,38 +6,12 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 19:51:39 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/15 03:07:55 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/16 00:12:27 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*real_command_path(t_pipe *p, char *command)
-{
-	char	*tmp;
-	char	*comm_path;
-	int		i;
-
-	i = 0;
-	while (p->env_paths && p->env_paths[i])
-	{
-		comm_path = ft_strjoin(p->env_paths[i], "/");
-		tmp = comm_path;
-		comm_path = ft_strjoin(tmp, command);// maybe leak
-		free(tmp);
-		if (access(comm_path, F_OK) == 0)
-		{
-			if (access(comm_path, X_OK) == 0)
-				return (comm_path);
-			// else
-			// 	exit(126);
-		}
-		else
-			free(comm_path);
-		i++;
-	}
-	return (NULL);
-}
 
 void	error_message(char **argv, char *s, int flag)
 {
