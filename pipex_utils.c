@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 19:51:39 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/14 06:27:04 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/15 03:07:55 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ char	*real_command_path(t_pipe *p, char *command)
 	i = 0;
 	while (p->env_paths && p->env_paths[i])
 	{
-		// if (p->env_paths[ft_strlen(p->env_paths) - 1] != '/');
 		comm_path = ft_strjoin(p->env_paths[i], "/");
 		tmp = comm_path;
 		comm_path = ft_strjoin(tmp, command);// maybe leak
@@ -50,23 +49,23 @@ void	error_message(char **argv, char *s, int flag)
 	ft_putstr_fd("\n", 2);
 }
 
-int	open_file(char **argv, int file_n)
+int	open_file(char *argv, char **argv2, int file_n)
 {
 	int	fd;
 
 	if (file_n == 1)
-		fd = open(argv[file_n], O_RDONLY);
+		fd = open(argv, O_RDONLY);
 	else
 	{
-		fd = open(argv[file_n], O_WRONLY | O_CREAT | O_TRUNC, 0644);
-		if (access(argv[file_n], W_OK) != 0)
+		fd = open(argv, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (access(argv, W_OK) != 0)
 			exit(EXIT_FAILURE);
 	}
 	if (fd < 0)
 	{
-		ft_putstr_fd(&argv[0][2], 2);
+		ft_putstr_fd(&argv2[0][2], 2);
 		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(argv[file_n], 2);
+		ft_putstr_fd(argv2[file_n], 2);
 		ft_putstr_fd(": ", 2);
 		perror(NULL);
 		exit(errno);

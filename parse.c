@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:43:22 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/14 06:28:05 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/14 17:14:31 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,63 +35,63 @@ char *ft_strndup(char *str, int len)
 	arr[i] = '\0';
 	return (arr);
 }
-char	**create_command(char *str, t_pipe *p)
+char	**create_command(char *str)
 {
-    int		i;
-    int		len;
-    int		pos;
+	int		i;
+	int		len;
+	int		pos;
 	int		word_counter;
-	char	**commandsss;
+	char	**par_comm;
 
-    i = 0;
-    len = 0;
+	i = 0;
+	len = 0;
 	word_counter = 0;
-    while (str[i] != '\0')
-    {
-        len = 0;
-        if (str[i] == '\'' || str[i] == '\"')
-        {
+	while (str[i] != '\0')
+	{
+		len = 0;
+		if (str[i] == '\'' || str[i] == '\"')
+		{
 			word_counter++;
-            pos = str[i];
-            i++;
-            while(str[i] != pos && str[i] != '\0')
-            {
-                if (str[i] == '\\')
-                    i++;
-                i++;
-                len++;
-            }
-            if (str[i] == pos)
-                i++;
-        }
-      else if (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
-      {
-		word_counter++;
-        while (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
-        {
-            if (str[i] == '\\')
-              i++;
-          i++;
-          len++;
-        }
-      }
-      while (str[i] == ' ' && str[i] != '\0')
-        i++;
-    }
-	commandsss = (char **)malloc(sizeof(char *) * (word_counter + 1));
-	return (parse_command(str, p, commandsss));
+			pos = str[i];
+			i++;
+			while (str[i] != pos && str[i] != '\0')
+			{
+				if (str[i] == '\\')
+					i++;
+				i++;
+				len++;
+			}
+			if (str[i] == pos)
+				i++;
+		}
+		else if (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
+		{
+			word_counter++;
+			while (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
+			{
+				if (str[i] == '\\')
+					i++;
+				i++;
+				len++;
+			}
+		}
+		while (str[i] == ' ' && str[i] != '\0')
+			i++;
+	}
+	par_comm = (char **)malloc(sizeof(char *) * (word_counter + 1));
+	return (parse_command(str, par_comm));
 }
 
-char	**parse_command(char *str, t_pipe *p, char **commandsss)
+char	**parse_command(char *str, char **par_comm)
 {
-    int    i;
+	int		i;
 	int		j;
-    int    len;
-    char   pos;
-    char    *temp;
+	int		len;
+	char	pos;
+	char	*temp;
 
-    i = 0;
-    len = 0;
+	i = 0;
+	len = 0;
 	j = 0;
 	while (str[i] != '\0')
 	{
@@ -101,42 +101,35 @@ char	**parse_command(char *str, t_pipe *p, char **commandsss)
 			pos = str[i];
 			i++;
 			temp = str + i;
-			while(str[i] != pos && str[i] != '\0')
+			while (str[i] != pos && str[i] != '\0')
 			{
 				if (str[i] == '\\')
 					i++;
 				i++;
 				len++;
 			}
-			commandsss[j] = ft_strndup(temp, len);
+			par_comm[j] = ft_strndup(temp, len);
 			j++;
 			if (str[i] == pos)
 				i++;
 		}
-	else if (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
-	{
-		temp = str + i;
-		while (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
+		else if (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
 		{
-			if (str[i] == '\\')
-			i++;
-		i++;
-		len++;
+			temp = str + i;
+			while (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
+			{
+				if (str[i] == '\\')
+					i++;
+				i++;
+				len++;
+			}
+			par_comm[j] = ft_strndup(temp, len);
+			j++;
 		}
-		commandsss[j] = ft_strndup(temp, len);
-		j++;
+		while (str[i] == ' ' && str[i] != '\0')
+			i++;
 	}
-	while (str[i] == ' ' && str[i] != '\0')
-		i++;
-	}
-	commandsss[j] = NULL;
-	return (commandsss);
+	par_comm[j] = NULL;
+	return (par_comm);
 }
 
-// int main(void)
-// {
-// 	t_pipe *p;
-
-// 	printf("%s",create_command("awk '{count++} END {printf \\'count: %i\\' , count}'", p)[1]);
-// 	return (0);
-// }

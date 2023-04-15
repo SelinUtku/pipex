@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 20:45:31 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/14 06:58:48 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/15 04:07:04 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ void	envp_path(t_pipe *p, char **envp)
 
 char	*command_path(t_pipe *p, char *command)
 {
-	if (command[0] == '.' || ft_strchr(command,'/') != NULL)
+	if (command[0] == '.' || ft_strchr(command, '/') != NULL)
 	{
 		if (access(command, F_OK) == 0)
 		{
@@ -48,14 +48,16 @@ char	*command_path(t_pipe *p, char *command)
 	return (real_command_path(p, command));
 }
 
-void	first_child(t_pipe *p, char **argv, int *pipes, char **envp)
+void	first_child(t_pipe *p, char **argv, int **pipes, char **envp, int i)
 {
-	close(pipes[0]);
-	p->command1 = create_command(argv[2], p);
-	p->fd1 = open_file(argv, 1);
-	if (dup2(pipes[1], STDOUT_FILENO) < 0)
+	int	j;
+
+	close(pipes[0][0]);
+	p->command1 = create_command(argv[2]);
+	p->fd1 = open_file(argv[1], argv, 1);
+	if (dup2(pipes[0][1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
-	close(pipes[1]);
+	close(pipes[0][1]);
 	if (dup2(p->fd1, STDIN_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->fd1);
@@ -64,26 +66,73 @@ void	first_child(t_pipe *p, char **argv, int *pipes, char **envp)
 		error_message(argv, "command not found", 2);
 		exit(127);
 	}
+	j = -1;
+	while (++j < p->n_argc - 4)
+	{
+		if (i != j)
+			close(pipes[j][0]);
+		if (i + 1 != j)
+			close(pipes[j][1]);
+	}
 	execve(command_path(p, p->command1[0]), p->command1, envp);
 	perror("execve");
 	exit(EXIT_FAILURE);
 }
 
-void	second_child(t_pipe *p, char **argv, int *pipes, char **envp)
+void	last_child(t_pipe *p, char **argv, int **pipes, char **envp, int i)
 {
-	close(pipes[1]);
-	p->fd2 = open_file(argv, 4);
-	if (dup2(pipes[0], STDIN_FILENO) < 0)
+	int	j;
+
+	close(pipes[i][1]);
+	p->fd2 = open_file(argv[p->n_argc - 1], argv, i + 3);
+	if (dup2(pipes[i][0], STDIN_FILENO) < 0)
 		exit(EXIT_FAILURE);
-	close(pipes[0]);
+	close(pipes[i][0]);
 	if (dup2(p->fd2, STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->fd2);
-	p->command2 = create_command(argv[3], p);
+	p->command2 = create_command(argv[p->n_argc - 2]);
 	if (command_path(p, p->command2[0]) == NULL)
 	{
-		error_message(argv, "command not found", 3);
+		error_message(argv, "command not found", p->n_argc - 2);
 		exit(127);
+	}
+	j = -1;
+	while (++j < p->n_argc - 4)
+	{
+		if (i != j)
+			close(pipes[j][0]);
+		if (i + 1 != j)
+			close(pipes[j][1]);
+	}
+	execve(command_path(p, p->command2[0]), p->command2, envp);
+	perror("execve");
+	exit(EXIT_FAILURE);
+}
+
+void	middle_child(t_pipe *p, char **argv, int **pipes, char **envp, int i)
+{
+	int	j;
+
+	if (dup2(pipes[i][0], STDIN_FILENO) < 0)
+		exit(EXIT_FAILURE);
+	close(pipes[i][1]);
+	if (dup2(pipes[i + 1][1], STDOUT_FILENO) < 0)
+		exit(EXIT_FAILURE);
+	close(pipes[i + 1][1]);
+	p->command2 = create_command(argv[i + 3]);
+	if (command_path(p, p->command2[0]) == NULL)
+	{
+		error_message(argv, "command not found", i + 3);
+		exit(127);
+	}
+	j = -1;
+	while (++j < p->n_argc - 4)
+	{
+		if (i != j)
+			close(pipes[j][0]);
+		if (i + 1 != j)
+			close(pipes[j][1]);
 	}
 	execve(command_path(p, p->command2[0]), p->command2, envp);
 	perror("execve");
@@ -98,34 +147,55 @@ void leaks()
 int main (int argc, char **argv, char **envp)
 {
 	t_pipe	p;
-	pid_t	pid1;
-	pid_t	pid2;
-	int		pipes[2];
+	pid_t	*pid;
+	int		i;
+	int		j;
+	int		**pipes;
 	int		status;
 
 	// atexit(leaks);
+
 	p.c1_path = NULL;
 	p.c2_path = NULL;
 	p.path = NULL;
-	if (argc == 5)
+	p.n_argc = argc;
+	if (argc >= 5)
 	{
+		pipes = malloc((argc - 4) * sizeof(int *));
+		pid = malloc((argc - 3) * sizeof(int));
+		i = -1;
 		envp_path(&p, envp);
-		if (pipe(pipes) < 0)
-			exit(EXIT_FAILURE);//perror
-		pid1 = fork();
-		if (pid1 < 0)
-			exit(EXIT_FAILURE);
-		if (pid1 == 0)//child1
-			first_child(&p, argv, pipes, envp);
-		pid2 = fork();
-		if (pid2 < 0)
-			exit(EXIT_FAILURE);
-		if (pid2 == 0)//child2
-			second_child(&p, argv, pipes, envp);
-		close(pipes[0]);
-		close(pipes[1]);
-		waitpid(pid1, &status, 0);
-		waitpid(pid2, &status, 0);
+		while (++i < argc - 4)
+		{
+			pipes[i] = malloc (sizeof(int) * 2);
+			if (pipe(pipes[i]) < 0)
+				exit(EXIT_FAILURE);
+		}
+		i = -1;
+		while (++i < argc - 3)
+		{
+			pid[i] = fork();
+			if (pid[i] < 0)
+				exit(EXIT_FAILURE);
+			if (pid[i] == 0)
+			{
+				if (i == 0)
+					first_child(&p, argv, pipes, envp, i);
+				else if (i == argc - 4)
+					last_child(&p, argv, pipes, envp, i - 1);
+				else
+					middle_child(&p, argv, pipes, envp, i - 1);
+			}
+		}
+		i = -1;
+		while (++i < argc - 4)
+		{
+			close(pipes[i][0]);
+			close(pipes[i][1]);
+		}
+		i = -1;
+		while (++i < argc - 3)
+			waitpid(pid[i], &status, 0);
 		if (WIFEXITED(status))
 			exit(WEXITSTATUS(status));
 	}
