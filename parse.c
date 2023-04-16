@@ -6,125 +6,111 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:43:22 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/16 01:25:45 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/17 01:20:44 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-char	*ft_strndup(char *str, int len)
+void	command_counter_util(char *str, t_parse *par)
 {
-	int		i;
-	int		j;
-	char	*arr;
+	int	pos;
 
-	arr = malloc(sizeof(char) * (len + 1));
-	if (!arr)
+	par->word_counter++;
+	pos = str[par->i];
+	par->i++;
+	while (str[par->i] != pos && str[par->i] != '\0')
 	{
-		perror("malloc");
-		return (NULL);
+		if (str[par->i] == '\\')
+			par->i++;
+		par->i++;
 	}
-	i = -1;
-	j = 0;
-	while (++i < len)
-	{
-		if (str[i + j] == '\\')
-			j++;
-		arr[i] = str[i + j];
-	}
-	arr[i] = '\0';
-	return (arr);
+	if (str[par->i] == pos)
+		par->i++;
 }
 
-char	**create_command(char *str)
+char	**command_counter(char *str)
 {
-	int		i;
-	int		pos;
-	int		word_counter;
-	char	**par_comm;
+	t_parse	par;
 
-	i = 0;
-	word_counter = 0;
-	while (str[i] != '\0')
+	par.i = 0;
+	par.word_counter = 0;
+	while (str[par.i] != '\0')
 	{
-		if (str[i] == '\'' || str[i] == '\"')
+		if (str[par.i] == '\'' || str[par.i] == '\"')
+			command_counter_util(str, &par);
+		else if (str[par.i] != '\'' && str[par.i] != '\"'
+			&& str[par.i] != ' ' && str[par.i] != '\0')
 		{
-			word_counter++;
-			pos = str[i];
-			i++;
-			while (str[i] != pos && str[i] != '\0')
+			par.word_counter++;
+			while (str[par.i] != '\'' && str[par.i] != '\"'
+				&& str[par.i] != ' ' && str[par.i] != '\0')
 			{
-				if (str[i] == '\\')
-					i++;
-				i++;
-			}
-			if (str[i] == pos)
-				i++;
-		}
-		else if (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
-		{
-			word_counter++;
-			while (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
-			{
-				if (str[i] == '\\')
-					i++;
-				i++;
+				if (str[par.i] == '\\')
+					par.i++;
+				par.i++;
 			}
 		}
-		while (str[i] == ' ' && str[i] != '\0')
-			i++;
+		while (str[par.i] == ' ' && str[par.i] != '\0')
+			par.i++;
 	}
-	par_comm = (char **)malloc(sizeof(char *) * (word_counter + 1));
-	return (parse_command(str, par_comm));
+	par.par_comm = (char **)malloc(sizeof(char *) * (par.word_counter + 1));
+	return (parse_command(str, par.par_comm));
 }
 
-char	**parse_command(char *str, char **par_comm)
+void	parse_command_util(char *str, t_parse *par)
 {
-	int		i;
-	int		j;
-	int		len;
 	char	pos;
-	char	*temp;
 
-	i = 0;
-	len = 0;
-	j = 0;
-	while (str[i] != '\0')
+	pos = str[par->i];
+	par->i++;
+	par->temp = str + par->i;
+	while (str[par->i] != pos && str[par->i] != '\0')
 	{
-		len = 0;
-		if (str[i] == '\'' || str[i] == '\"')
-		{
-			pos = str[i];
-			i++;
-			temp = str + i;
-			while (str[i] != pos && str[i] != '\0')
-			{
-				if (str[i] == '\\')
-					i++;
-				i++;
-				len++;
-			}
-			par_comm[j] = ft_strndup(temp, len);
-			j++;
-			if (str[i] == pos)
-				i++;
-		}
-		else if (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
-		{
-			temp = str + i;
-			while (str[i] != '\'' && str[i] != '\"' && str[i] != ' ' && str[i] != '\0')
-			{
-				if (str[i] == '\\')
-					i++;
-				i++;
-				len++;
-			}
-			par_comm[j] = ft_strndup(temp, len);
-			j++;
-		}
-		while (str[i] == ' ' && str[i] != '\0')
-			i++;
+		if (str[par->i] == '\\')
+			par->i++;
+		par->i++;
+		par->len++;
 	}
-	par_comm[j] = NULL;
-	return (par_comm);
+	par->par_comm[par->j] = ft_strndup(par->temp, par->len);
+	par->j++;
+	if (str[par->i] == pos)
+		par->i++;
+}
+
+void	parse_command_util2(char *str, t_parse *par)
+{
+	par->temp = str + par->i;
+	while (str[par->i] != '\'' && str[par->i] != '\"'
+		&& str[par->i] != ' ' && str[par->i] != '\0')
+	{
+		if (str[par->i] == '\\')
+			par->i++;
+		par->i++;
+		par->len++;
+	}
+	par->par_comm[par->j] = ft_strndup(par->temp, par->len);
+	par->j++;
+}
+
+char	**parse_command(char *str, char **command)
+{
+	t_parse	par;
+
+	par.i = 0;
+	par.j = 0;
+	par.par_comm = command;
+	while (str[par.i] != '\0')
+	{
+		par.len = 0;
+		if (str[par.i] == '\'' || str[par.i] == '\"')
+			parse_command_util(str, &par);
+		else if (str[par.i] != '\'' && str[par.i] != '\"'
+			&& str[par.i] != ' ' && str[par.i] != '\0')
+			parse_command_util2(str, &par);
+		while (str[par.i] == ' ' && str[par.i] != '\0')
+			par.i++;
+	}
+	par.par_comm[par.j] = NULL;
+	return (par.par_comm);
 }

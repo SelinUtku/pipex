@@ -6,7 +6,7 @@
 #    By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/09 20:49:06 by sutku             #+#    #+#              #
-#    Updated: 2023/04/16 00:15:45 by sutku            ###   ########.fr        #
+#    Updated: 2023/04/16 06:58:09 by sutku            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -27,7 +27,7 @@ PRINTF_LIB	=	ftprintf/libftprintf.a
 
 CC		= 	cc
 RM		=   rm -f
-CFLAGS	=	#-Wall -Werror -Wextra
+CFLAGS	=	-Wall -Werror -Wextra
 
 NAME	=	pipex
 

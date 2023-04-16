@@ -6,12 +6,11 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 19:51:39 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/16 00:12:27 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/17 01:18:39 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-
 
 void	error_message(char **argv, char *s, int flag)
 {
@@ -51,10 +50,35 @@ void	free_double(char **str)
 {
 	int	i;
 
+	i = 0;
 	while (str[i])
 	{
 		free(str[i]);
 		i++;
 	}
 	free(str);
+}
+
+char	*ft_strndup(char *str, int len)
+{
+	int		i;
+	int		j;
+	char	*arr;
+
+	arr = malloc(sizeof(char) * (len + 1));
+	if (!arr)
+	{
+		perror("malloc");
+		return (NULL);
+	}
+	i = -1;
+	j = 0;
+	while (++i < len)
+	{
+		if (str[i + j] == '\\')
+			j++;
+		arr[i] = str[i + j];
+	}
+	arr[i] = '\0';
+	return (arr);
 }

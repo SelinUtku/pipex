@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 20:45:31 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/16 00:13:38 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/16 06:39:25 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,6 @@
 int	main(int argc, char **argv, char **envp)
 {
 	t_pipe	p;
-	int		i;
 
 	p.path = NULL;
 	p.n_argc = argc;

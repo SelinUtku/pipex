@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/16 00:12:07 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/16 00:13:34 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/17 01:18:15 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,7 +58,7 @@ char	*real_command_path(t_pipe *p, char *command)
 	{
 		comm_path = ft_strjoin(p->env_paths[i], "/");
 		tmp = comm_path;
-		comm_path = ft_strjoin(tmp, command);// maybe leak
+		comm_path = ft_strjoin(tmp, command);
 		free(tmp);
 		if (access(comm_path, F_OK) == 0)
 		{
