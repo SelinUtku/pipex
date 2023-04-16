@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:01 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/16 00:14:20 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/17 01:15:33 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 void	first_child(t_pipe *p, char **argv, char **envp, int i)
 {
 	close(p->pipes[0][0]);
-	p->command1 = create_command(argv[2]);
+	p->command1 = command_counter(argv[2]);
 	p->fd1 = open_file(argv[1], argv, 1);
 	if (dup2(p->pipes[0][1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
@@ -44,7 +44,7 @@ void	last_child(t_pipe *p, char **argv, char **envp, int i)
 	if (dup2(p->fd2, STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->fd2);
-	p->command2 = create_command(argv[p->n_argc - 2]);
+	p->command2 = command_counter(argv[p->n_argc - 2]);
 	if (command_path(p, p->command2[0]) == NULL)
 	{
 		error_message(argv, "command not found", p->n_argc - 2);
@@ -64,7 +64,7 @@ void	middle_child(t_pipe *p, char **argv, char **envp, int i)
 	if (dup2(p->pipes[i + 1][1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->pipes[i + 1][1]);
-	p->command2 = create_command(argv[i + 3]);
+	p->command2 = command_counter(argv[i + 3]);
 	if (command_path(p, p->command2[0]) == NULL)
 	{
 		error_message(argv, "command not found", i + 3);
