@@ -6,7 +6,7 @@
 #    By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/09 20:49:06 by sutku             #+#    #+#              #
-#    Updated: 2023/04/16 06:58:09 by sutku            ###   ########.fr        #
+#    Updated: 2023/04/17 04:15:38 by sutku            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -18,6 +18,9 @@ PIP_OBJ		=	$(PIP_SRC:.c=.o)
 
 # BONUS_SRC	=	
 # BONUS_OBJ	=	$(BONUS_SRC:.c=.o)
+
+GNL_SRC		=	gnl/get_next_line_utils.c gnl/get_next_line.c
+GNL_OBJ		=	$(GNL_SRC:.c=.o)
 
 LIBFT		=	libft/
 LIBFT_LIB	=	libft/libft.a
@@ -42,13 +45,13 @@ WHITE = \033[0;97m
 
 all:	$(NAME)
 
-$(NAME): $(PIP_OBJ) $(LIBFT_LIB) $(PRINTF_LIB)
-	$(CC) $(CFLAGS) $(PIP_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) -o $(NAME)
+$(NAME): $(PIP_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ)
+	$(CC) $(CFLAGS) $(PIP_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ) -o $(NAME)
 	echo "$(CYAN)Pipex compiled successfully$(DEF_COLOR)"
 
-# $(NAME_B): $(BONUS_OBJ) $(PS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB)
-# 	$(CC) $(CFLAGS) $(BONUS_OBJ) $(PS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB) -o $(NAME_B)
-# 	echo "Push_Swap_Bonus compiled successfully$(DEF_COLOR)"
+# $(NAME_B): $(PIP_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB)
+# 	$(CC) $(CFLAGS) $(PIP_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB) -o $(NAME_B)
+# 	echo "Pipex_Bonus compiled successfully$(DEF_COLOR)"
 
 $(LIBFT_LIB):
 	make bonus -C $(LIBFT) && make clean -C $(LIBFT)
@@ -61,15 +64,15 @@ $(PRINTF_LIB):
 clean:
 	$(RM) $(PIP_OBJ)
 	# $(RM) $(BONUS_OBJ)
-	$(RM) $(LIBFT_LIB) $(PRINTF_LIB)
+	$(RM) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ)
 	echo "$(MAGENTA)Object-Files are cleaned!"
 
 fclean: clean
 	$(RM) $(NAME) 
-	# $(RM) $(NAME_B)
+	$(RM) $(NAME_B)
 	echo "$(MAGENTA)Programs / Libraries are cleaned!"
 
-bonus: all 
+bonus: all #$(NAME_B)
 	
 re: fclean all 
 

@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:01 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/17 01:15:33 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/17 05:45:05 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,8 +15,11 @@
 void	first_child(t_pipe *p, char **argv, char **envp, int i)
 {
 	close(p->pipes[0][0]);
-	p->command1 = command_counter(argv[2]);
-	p->fd1 = open_file(argv[1], argv, 1);
+	p->fd1 = open_file(argv[1], argv, 1, p);
+	if (p->heredoc_status == 1)
+		p->command1 = command_counter(argv[i + 3]);
+	else
+		p->command1 = command_counter(argv[i + 2]);
 	if (dup2(p->pipes[0][1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->pipes[0][1]);
@@ -37,14 +40,20 @@ void	first_child(t_pipe *p, char **argv, char **envp, int i)
 void	last_child(t_pipe *p, char **argv, char **envp, int i)
 {
 	close(p->pipes[i][1]);
-	p->fd2 = open_file(argv[p->n_argc - 1], argv, i + 3);
+	if (p->heredoc_status == 1)
+		p->fd2 = open_file(argv[p->n_argc], argv, i + 4, p);
+	else
+		p->fd2 = open_file(argv[p->n_argc - 1], argv, i + 3, p);
 	if (dup2(p->pipes[i][0], STDIN_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->pipes[i][0]);
 	if (dup2(p->fd2, STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->fd2);
-	p->command2 = command_counter(argv[p->n_argc - 2]);
+	if (p->heredoc_status == 1)
+		p->command2 = command_counter(argv[p->n_argc - 1]);
+	else
+		p->command2 = command_counter(argv[p->n_argc - 2]);
 	if (command_path(p, p->command2[0]) == NULL)
 	{
 		error_message(argv, "command not found", p->n_argc - 2);
@@ -64,7 +73,10 @@ void	middle_child(t_pipe *p, char **argv, char **envp, int i)
 	if (dup2(p->pipes[i + 1][1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->pipes[i + 1][1]);
-	p->command2 = command_counter(argv[i + 3]);
+	if (p->heredoc_status == 1)
+		p->command2 = command_counter(argv[i + 4]);
+	else
+		p->command2 = command_counter(argv[i + 3]);
 	if (command_path(p, p->command2[0]) == NULL)
 	{
 		error_message(argv, "command not found", i + 3);
@@ -106,6 +118,10 @@ void	wait_all_child(t_pipe *p)
 	i = -1;
 	while (++i < p->n_argc - 3)
 		waitpid(p->pid[i], &p->status, 0);
+	free(p->pid);
+	free_double(p->env_paths);
+	if (p->heredoc_status == 1)
+		unlink("heredoc_file");
 	if (WIFEXITED(p->status))
 		exit(WEXITSTATUS(p->status));
 }
