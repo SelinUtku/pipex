@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/11/08 13:48:48 by sutku             #+#    #+#             */
-/*   Updated: 2023/02/07 14:25:29 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/20 06:26:12 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,8 @@ char	*ft_substr_gnl(char *s, unsigned int start, size_t len)
 		len = 0;
 	if (len_s - start <= len)
 		len = len_s - start;
+	if (len == 0)
+		return (free(s), NULL);
 	arr = malloc((len + 1) * sizeof(char));
 	if (!arr)
 		return (NULL);

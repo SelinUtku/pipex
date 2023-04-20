@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 19:51:39 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/17 05:52:14 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/20 05:46:37 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -38,17 +38,13 @@ int	open_file(char *argv, char **argv2, int file_n, t_pipe *p)
 		else
 			fd = open(argv, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (access(argv, W_OK) != 0)
+		{
+			all_free(p);
 			exit(EXIT_FAILURE);
+		}
 	}
 	if (fd < 0)
-	{
-		ft_putstr_fd(&argv2[0][2], 2);
-		ft_putstr_fd(": ", 2);
-		ft_putstr_fd(argv2[file_n], 2);
-		ft_putstr_fd(": ", 2);
-		perror(NULL);
-		exit(errno);
-	}
+		fd_fails(argv2, file_n, p);
 	return (fd);
 }
 
@@ -58,6 +54,19 @@ void	free_double(char **str)
 
 	i = 0;
 	while (str[i])
+	{
+		free(str[i]);
+		i++;
+	}
+	free(str);
+}
+
+void	free_double_int(int **str, int len)
+{
+	int	i;
+
+	i = 0;
+	while (i < len)
 	{
 		free(str[i]);
 		i++;
@@ -87,31 +96,4 @@ char	*ft_strndup(char *str, int len)
 	}
 	arr[i] = '\0';
 	return (arr);
-}
-
-void	here_doc(char **argv)
-{
-	char	*arr;
-	int		len;
-	int		fd;
-
-	len = 0;
-	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
-	arr = NULL;
-	if (fd < 0)
-		exit(errno);
-	while (1)
-	{
-		arr = get_next_line(STDIN_FILENO);
-		len = ft_strlen(arr);
-		if (ft_strncmp(arr, argv[2], len - 1) == 0 \
-			&& len - 1 == ft_strlen(argv[2]))
-		{	
-			free(arr);
-			break ;
-		}
-		ft_putstr_fd(arr, fd);
-		free(arr);
-	}
-	close(fd);
 }

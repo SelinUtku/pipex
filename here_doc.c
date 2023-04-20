@@ -1,39 +1,40 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   here_doc.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/09 20:45:31 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 06:59:59 by sutku            ###   ########.fr       */
+/*   Created: 2023/04/17 07:15:29 by sutku             #+#    #+#             */
+/*   Updated: 2023/04/20 05:56:05 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main(int argc, char **argv, char **envp)
+void	here_doc(char **argv)
 {
-	t_pipe	p;
+	char	*arr;
+	int		len;
+	int		fd;
 
-	p.path = NULL;
-	p.n_argc = argc;
-	p.heredoc_status = 0;
-	if (argc >= 5)
+	len = 0;
+	fd = open("heredoc_file", O_WRONLY | O_CREAT | O_TRUNC, 0644);
+	arr = NULL;
+	if (fd < 0)
+		exit(errno);
+	while (1)
 	{
-		envp_path(&p, envp);
-		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-		{
-			p.n_argc = argc - 1;
-			p.heredoc_status = 1;
-			here_doc(argv);
+		arr = get_next_line(STDIN_FILENO);
+		len = ft_strlen(arr);
+		if (ft_strncmp(arr, argv[2], len - 1) == 0 \
+			&& len - 1 == ft_strlen(argv[2]))
+		{	
+			free(arr);
+			break ;
 		}
-		open_pipes(&p);
-		calling_childs(&p, argv, envp);
-		close_main_pipes(&p);
-		wait_all_child(&p);
+		ft_putstr_fd(arr, fd);
+		free(arr);
 	}
-	else
-		exit(EXIT_FAILURE);
-	exit(EXIT_SUCCESS);
+	close(fd);
 }

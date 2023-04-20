@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 21:10:36 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/17 04:57:52 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/20 05:46:11 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,11 +25,11 @@
 
 typedef struct s_pipe
 {
-	char	**command1;
-	char	**command2;
+	char	**command;
 	char	**env_paths;
 	int		**pipes;
 	char	*path;
+	char	*com_path;
 	pid_t	*pid;
 	int		status;
 	int		fd1;
@@ -56,7 +56,10 @@ char	*command_path(t_pipe *p, char *command);
 void	error_message(char **argv, char *s, int flag);
 int		open_file(char *argv, char **argv2, int file_n, t_pipe *p);
 void	free_double(char **str);
+void	free_double_int(int **str, int len);
 void	here_doc(char **argv);
+void	all_free(t_pipe *p);
+void	fd_fails(char **argv2, int file_n, t_pipe *p);
 //parsing
 char	**command_counter(char *str);
 void	command_counter_util(char *str, t_parse *prs);
