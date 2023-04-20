@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 22:58:04 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/16 00:16:05 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/20 05:49:07 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,10 @@ void	open_pipes(t_pipe *p)
 	{
 		p->pipes[i] = malloc (sizeof(int) * 2);
 		if (pipe(p->pipes[i]) < 0)
+		{
+			free_double_int(p->pipes, i);
 			exit(EXIT_FAILURE);
+		}
 	}
 }
 
@@ -50,4 +53,14 @@ void	close_pipes(t_pipe *p, int i)
 		if (i + 1 != j)
 			close(p->pipes[j][1]);
 	}
+}
+
+void	all_free(t_pipe *p)
+{
+	if (p->pid)
+		free(p->pid);
+	if (p->env_paths)
+		free_double(p->env_paths);
+	if (p->pipes)
+		free_double_int(p->pipes, p->n_argc - 4);
 }

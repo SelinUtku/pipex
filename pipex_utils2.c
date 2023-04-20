@@ -1,39 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   pipex_utils2.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/09 20:45:31 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 06:59:59 by sutku            ###   ########.fr       */
+/*   Created: 2023/04/20 05:43:38 by sutku             #+#    #+#             */
+/*   Updated: 2023/04/20 05:45:50 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-int	main(int argc, char **argv, char **envp)
+void	fd_fails(char **argv2, int file_n, t_pipe *p)
 {
-	t_pipe	p;
-
-	p.path = NULL;
-	p.n_argc = argc;
-	p.heredoc_status = 0;
-	if (argc >= 5)
-	{
-		envp_path(&p, envp);
-		if (ft_strncmp(argv[1], "here_doc", 8) == 0)
-		{
-			p.n_argc = argc - 1;
-			p.heredoc_status = 1;
-			here_doc(argv);
-		}
-		open_pipes(&p);
-		calling_childs(&p, argv, envp);
-		close_main_pipes(&p);
-		wait_all_child(&p);
-	}
-	else
-		exit(EXIT_FAILURE);
-	exit(EXIT_SUCCESS);
+	ft_putstr_fd(&argv2[0][2], 2);
+	ft_putstr_fd(": ", 2);
+	ft_putstr_fd(argv2[file_n], 2);
+	ft_putstr_fd(": ", 2);
+	perror(NULL);
+	all_free(p);
+	exit(errno);
 }
