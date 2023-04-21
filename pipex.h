@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 21:10:36 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 05:46:11 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 03:20:48 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,7 +63,7 @@ void	fd_fails(char **argv2, int file_n, t_pipe *p);
 //parsing
 char	**command_counter(char *str);
 void	command_counter_util(char *str, t_parse *prs);
-char	**parse_command(char *str, char **command);
+char	**parse_command(char *str, int comm_len);
 void	parse_command_util(char *str, t_parse *par);
 void	parse_command_util2(char *str, t_parse *par);
 char	*ft_strndup(char *str, int len);

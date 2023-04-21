@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:01 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 05:48:36 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 01:08:11 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -97,6 +97,8 @@ void	calling_childs(t_pipe *p, char **argv, char **envp)
 	int	i;
 
 	p->pid = malloc((p->n_argc - 3) * sizeof(int));
+	if (!p->pid)
+		exit(EXIT_FAILURE);
 	i = -1;
 	while (++i < p->n_argc - 3)
 	{	

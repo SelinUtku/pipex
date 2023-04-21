@@ -6,7 +6,7 @@
 #    By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/09 20:49:06 by sutku             #+#    #+#              #
-#    Updated: 2023/04/20 05:43:32 by sutku            ###   ########.fr        #
+#    Updated: 2023/04/21 04:29:44 by sutku            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -65,7 +65,7 @@ clean:
 	$(RM) $(PIP_OBJ)
 	# $(RM) $(BONUS_OBJ)
 	$(RM) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ)
-	echo "$(MAGENTA)Object-Files are cleaned!"
+	echo "$(MAGENTA)Object-Files are cleaned$(DEF_COLOR)"
 
 fclean: clean
 	$(RM) $(NAME) 

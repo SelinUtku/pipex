@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 07:15:29 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 05:56:05 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 04:26:58 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,6 +25,7 @@ void	here_doc(char **argv)
 		exit(errno);
 	while (1)
 	{
+		ft_printf("here_doc >");
 		arr = get_next_line(STDIN_FILENO);
 		len = ft_strlen(arr);
 		if (ft_strncmp(arr, argv[2], len - 1) == 0 \
