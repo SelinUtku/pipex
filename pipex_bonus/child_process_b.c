@@ -1,21 +1,24 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   child_process.c                                    :+:      :+:    :+:   */
+/*   child_process_b.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:01 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 04:51:38 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 06:00:51 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
-void	first_child(t_pipe *p, char **argv, char **envp, int i)
+void	first_child_b(t_pipe *p, char **argv, char **envp, int i)
 {
-	p->fd1 = open_file(argv[1], argv, 1, p);
-	p->command = command_counter(argv[i + 2]);
+	p->fd1 = open_file_b(argv[1], argv, 1, p);
+	if (p->heredoc_status == 1)
+		p->command = command_counter(argv[i + 3]);
+	else
+		p->command = command_counter(argv[i + 2]);
 	if (dup2(p->pipes[0][1], STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->pipes[0][1]);
@@ -36,15 +39,21 @@ void	first_child(t_pipe *p, char **argv, char **envp, int i)
 	exit(EXIT_FAILURE);
 }
 
-void	last_child(t_pipe *p, char **argv, char **envp, int i)
+void	last_child_b(t_pipe *p, char **argv, char **envp, int i)
 {
-	p->fd2 = open_file(argv[p->n_argc - 1], argv, i + 3, p);
+	if (p->heredoc_status == 1)
+		p->fd2 = open_file_b(argv[p->n_argc], argv, i + 4, p);
+	else
+		p->fd2 = open_file_b(argv[p->n_argc - 1], argv, i + 3, p);
 	if (dup2(p->pipes[i][0], STDIN_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	if (dup2(p->fd2, STDOUT_FILENO) < 0)
 		exit(EXIT_FAILURE);
 	close(p->fd2);
-	p->command = command_counter(argv[p->n_argc - 2]);
+	if (p->heredoc_status == 1)
+		p->command = command_counter(argv[p->n_argc - 1]);
+	else
+		p->command = command_counter(argv[p->n_argc - 2]);
 	close_main_pipes(p);
 	p->com_path = command_path(p, p->command[0]);
 	if (p->com_path == NULL)
@@ -59,7 +68,31 @@ void	last_child(t_pipe *p, char **argv, char **envp, int i)
 	exit(EXIT_FAILURE);
 }
 
-void	calling_childs(t_pipe *p, char **argv, char **envp)
+void	middle_child_b(t_pipe *p, char **argv, char **envp, int i)
+{
+	if (dup2(p->pipes[i][0], STDIN_FILENO) < 0)
+		exit(EXIT_FAILURE);
+	if (dup2(p->pipes[i + 1][1], STDOUT_FILENO) < 0)
+		exit(EXIT_FAILURE);
+	if (p->heredoc_status == 1)
+		p->command = command_counter(argv[i + 4]);
+	else
+		p->command = command_counter(argv[i + 3]);
+	close_main_pipes(p);
+	p->com_path = command_path(p, p->command[0]);
+	if (p->com_path == NULL)
+	{
+		error_message(argv, "command not found", i + 3);
+		all_free(p);
+		free_double(p->command);
+		exit(127);
+	}
+	execve(p->com_path, p->command, envp);
+	perror("execve");
+	exit(EXIT_FAILURE);
+}
+
+void	calling_childs_b(t_pipe *p, char **argv, char **envp)
 {
 	int	i;
 
@@ -78,14 +111,16 @@ void	calling_childs(t_pipe *p, char **argv, char **envp)
 		if (p->pid[i] == 0)
 		{
 			if (i == 0)
-				first_child(p, argv, envp, i);
+				first_child_b(p, argv, envp, i);
+			else if (i == p->n_argc - 4)
+				last_child_b(p, argv, envp, i - 1);
 			else
-				last_child(p, argv, envp, i - 1);
+				middle_child_b(p, argv, envp, i - 1);
 		}
 	}
 }
 
-void	wait_all_child(t_pipe *p)
+void	wait_all_child_b(t_pipe *p)
 {
 	int	i;
 
@@ -93,6 +128,8 @@ void	wait_all_child(t_pipe *p)
 	while (++i < p->n_argc - 3)
 		waitpid(p->pid[i], &p->status, 0);
 	all_free(p);
+	if (p->heredoc_status == 1)
+		unlink("heredoc_file");
 	if (WIFEXITED(p->status))
 		exit(WEXITSTATUS(p->status));
 }

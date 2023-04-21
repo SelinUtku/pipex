@@ -6,18 +6,22 @@
 #    By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/09 20:49:06 by sutku             #+#    #+#              #
-#    Updated: 2023/04/21 04:29:44 by sutku            ###   ########.fr        #
+#    Updated: 2023/04/21 06:34:08 by sutku            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .SILENT:
 
-PIP_SRC		=	pipex.c pipex_utils.c parse.c pipes_func.c child_process.c \
-				find_paths.c here_doc.c pipex_utils2.c
+PIP_SRC		=	pipex_utils.c parse.c pipes_func.c child_process.c \
+				find_paths.c pipex_utils2.c
 PIP_OBJ		=	$(PIP_SRC:.c=.o)
 
-# BONUS_SRC	=	
-# BONUS_OBJ	=	$(BONUS_SRC:.c=.o)
+PIP_MAIN		=	main.c
+PIP_MAIN_OBJ	= 	$(PIP_MAIN:.c=.o)
+
+BONUS_SRC	=	pipex_bonus/child_process_b.c pipex_bonus/here_doc_b.c \
+				pipex_bonus/main_bonus.c pipex_bonus/pipex_utils_b.c
+BONUS_OBJ	=	$(BONUS_SRC:.c=.o)
 
 GNL_SRC		=	gnl/get_next_line_utils.c gnl/get_next_line.c
 GNL_OBJ		=	$(GNL_SRC:.c=.o)
@@ -43,15 +47,15 @@ MAGENTA = \033[0;95m
 CYAN = \033[0;96m
 WHITE = \033[0;97m
 
-all:	$(NAME)
+all: $(NAME)
 
-$(NAME): $(PIP_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ)
-	$(CC) $(CFLAGS) $(PIP_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ) -o $(NAME)
+$(NAME): $(PIP_OBJ) $(PIP_MAIN_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ)
+	$(CC) $(CFLAGS) $(PIP_OBJ) $(PIP_MAIN_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ) -o $(NAME)
 	echo "$(CYAN)Pipex compiled successfully$(DEF_COLOR)"
 
-# $(NAME_B): $(PIP_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB)
-# 	$(CC) $(CFLAGS) $(PIP_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB) -o $(NAME_B)
-# 	echo "Pipex_Bonus compiled successfully$(DEF_COLOR)"
+	$(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) $(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB) -o $(NAME)
+	echo "$(CYAN)Pipex_Bonus compiled successfully$(DEF_COLOR)"
 
 $(LIBFT_LIB):
 	make bonus -C $(LIBFT) && make clean -C $(LIBFT)
@@ -62,18 +66,19 @@ $(PRINTF_LIB):
 	echo "$(BLUE)Printf compiled successfully$(DEF_COLOR)"
 
 clean:
-	$(RM) $(PIP_OBJ)
-	# $(RM) $(BONUS_OBJ)
+	$(RM) $(PIP_OBJ) $(PIP_MAIN_OBJ)
+	$(RM) $(BONUS_OBJ)
 	$(RM) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ)
 	echo "$(MAGENTA)Object-Files are cleaned$(DEF_COLOR)"
 
 fclean: clean
-	$(RM) $(NAME) 
-	$(RM) $(NAME_B)
+	$(RM) $(NAME)
 	echo "$(MAGENTA)Programs / Libraries are cleaned!"
 
-bonus: all #$(NAME_B)
+bonus: $(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB)
+	$(CC) $(CFLAGS) $(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB) -o $(NAME)
+	echo "$(CYAN)Pipex_Bonus compiled successfully$(DEF_COLOR)"
 	
-re: fclean all 
+re: fclean all
 
 .PHONY: all clean fclean re bonus

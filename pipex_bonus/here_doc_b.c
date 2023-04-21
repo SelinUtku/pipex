@@ -6,11 +6,11 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/17 07:15:29 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 04:26:58 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 04:43:43 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 void	here_doc(char **argv)
 {
