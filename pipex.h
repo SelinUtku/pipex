@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 21:10:36 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 03:20:48 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 05:58:56 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -57,7 +57,6 @@ void	error_message(char **argv, char *s, int flag);
 int		open_file(char *argv, char **argv2, int file_n, t_pipe *p);
 void	free_double(char **str);
 void	free_double_int(int **str, int len);
-void	here_doc(char **argv);
 void	all_free(t_pipe *p);
 void	fd_fails(char **argv2, int file_n, t_pipe *p);
 //parsing
@@ -75,7 +74,6 @@ void	close_main_pipes(t_pipe *p);
 void	calling_childs(t_pipe *p, char **argv, char **envp);
 void	first_child(t_pipe *p, char **argv, char **envp, int i);
 void	last_child(t_pipe *p, char **argv, char **envp, int i);
-void	middle_child(t_pipe *p, char **argv, char **envp, int i);
 void	wait_all_child(t_pipe *p);
 
 #endif

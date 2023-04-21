@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   pipex.c                                            :+:      :+:    :+:   */
+/*   main_bonus.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/04/09 20:45:31 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 06:59:59 by sutku            ###   ########.fr       */
+/*   Created: 2023/04/21 04:36:52 by sutku             #+#    #+#             */
+/*   Updated: 2023/04/21 06:34:29 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "pipex.h"
+#include "pipex_bonus.h"
 
 int	main(int argc, char **argv, char **envp)
 {
@@ -29,9 +29,9 @@ int	main(int argc, char **argv, char **envp)
 			here_doc(argv);
 		}
 		open_pipes(&p);
-		calling_childs(&p, argv, envp);
+		calling_childs_b(&p, argv, envp);
 		close_main_pipes(&p);
-		wait_all_child(&p);
+		wait_all_child_b(&p);
 	}
 	else
 		exit(EXIT_FAILURE);
