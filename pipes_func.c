@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 22:58:04 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 05:49:07 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 01:07:52 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,9 +18,13 @@ void	open_pipes(t_pipe *p)
 
 	i = -1;
 	p->pipes = malloc((p->n_argc - 4) * sizeof(int *));
+	if (!p->pipes)
+		exit (EXIT_FAILURE);
 	while (++i < p->n_argc - 4)
 	{
 		p->pipes[i] = malloc (sizeof(int) * 2);
+		if (!p->pipes[i])
+			exit(EXIT_FAILURE);
 		if (pipe(p->pipes[i]) < 0)
 		{
 			free_double_int(p->pipes, i);

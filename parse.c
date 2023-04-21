@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 23:43:22 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/20 03:32:25 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/21 03:22:04 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,8 +54,7 @@ char	**command_counter(char *str)
 		while (str[par.i] == ' ' && str[par.i] != '\0')
 			par.i++;
 	}
-	par.par_comm = (char **)malloc(sizeof(char *) * (par.word_counter + 1));
-	return (parse_command(str, par.par_comm));
+	return (parse_command(str, par.word_counter));
 }
 
 void	parse_command_util(char *str, t_parse *par)
@@ -93,13 +92,15 @@ void	parse_command_util2(char *str, t_parse *par)
 	par->j++;
 }
 
-char	**parse_command(char *str, char **command)
+char	**parse_command(char *str, int comm_len)
 {
 	t_parse	par;
 
 	par.i = 0;
 	par.j = 0;
-	par.par_comm = command;
+	par.par_comm = (char **)malloc(sizeof(char *) * (comm_len + 1));
+	if (!par.par_comm)
+		exit (EXIT_FAILURE);
 	while (str[par.i] != '\0')
 	{
 		par.len = 0;
