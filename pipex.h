@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/09 21:10:36 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 05:58:56 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/22 03:40:45 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,9 +67,8 @@ void	parse_command_util(char *str, t_parse *par);
 void	parse_command_util2(char *str, t_parse *par);
 char	*ft_strndup(char *str, int len);
 //pipes
-void	close_pipes(t_pipe *p, int i);
 void	open_pipes(t_pipe *p);
-void	close_main_pipes(t_pipe *p);
+void	close_pipes(t_pipe *p);
 //child process
 void	calling_childs(t_pipe *p, char **argv, char **envp);
 void	first_child(t_pipe *p, char **argv, char **envp, int i);

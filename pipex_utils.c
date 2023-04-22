@@ -6,12 +6,11 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/12 19:51:39 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 04:39:22 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/22 00:30:50 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
-#include <string.h>
 
 void	error_message(char **argv, char *s, int flag)
 {
@@ -27,7 +26,7 @@ int	open_file(char *argv, char **argv2, int file_n, t_pipe *p)
 {
 	int	fd;
 
-	if (file_n == 1 && p->heredoc_status == 0)
+	if (file_n == 1)
 		fd = open(argv, O_RDONLY);
 	else
 	{
