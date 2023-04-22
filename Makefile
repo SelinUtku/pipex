@@ -6,14 +6,14 @@
 #    By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2023/04/09 20:49:06 by sutku             #+#    #+#              #
-#    Updated: 2023/04/21 06:34:08 by sutku            ###   ########.fr        #
+#    Updated: 2023/04/22 06:31:33 by sutku            ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
 .SILENT:
 
-PIP_SRC		=	pipex_utils.c parse.c pipes_func.c child_process.c \
-				find_paths.c pipex_utils2.c
+PIP_SRC		=	parse.c pipes_func.c child_process.c \
+				find_paths.c pipex_utils2.c pipex_utils.c 
 PIP_OBJ		=	$(PIP_SRC:.c=.o)
 
 PIP_MAIN		=	main.c
@@ -53,10 +53,6 @@ $(NAME): $(PIP_OBJ) $(PIP_MAIN_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ)
 	$(CC) $(CFLAGS) $(PIP_OBJ) $(PIP_MAIN_OBJ) $(LIBFT_LIB) $(PRINTF_LIB) $(GNL_OBJ) -o $(NAME)
 	echo "$(CYAN)Pipex compiled successfully$(DEF_COLOR)"
 
-	$(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB)
-	$(CC) $(CFLAGS) $(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB) -o $(NAME)
-	echo "$(CYAN)Pipex_Bonus compiled successfully$(DEF_COLOR)"
-
 $(LIBFT_LIB):
 	make bonus -C $(LIBFT) && make clean -C $(LIBFT)
 	echo "$(GREEN)Libft compiled successfully$(DEF_COLOR)"
@@ -73,7 +69,7 @@ clean:
 
 fclean: clean
 	$(RM) $(NAME)
-	echo "$(MAGENTA)Programs / Libraries are cleaned!"
+	echo "$(MAGENTA)Programs / Libraries are cleaned!$(DEF_COLOR)"
 
 bonus: $(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB)
 	$(CC) $(CFLAGS) $(PIP_OBJ) $(BONUS_OBJ) $(GNL_OBJ) $(PRINTF_LIB) $(LIBFT_LIB) -o $(NAME)

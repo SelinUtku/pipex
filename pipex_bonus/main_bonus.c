@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/21 04:36:52 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 06:34:29 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/22 03:42:53 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,7 +30,7 @@ int	main(int argc, char **argv, char **envp)
 		}
 		open_pipes(&p);
 		calling_childs_b(&p, argv, envp);
-		close_main_pipes(&p);
+		close_pipes(&p);
 		wait_all_child_b(&p);
 	}
 	else

@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 23:46:01 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 06:00:51 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/22 23:41:42 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,13 +19,12 @@ void	first_child_b(t_pipe *p, char **argv, char **envp, int i)
 		p->command = command_counter(argv[i + 3]);
 	else
 		p->command = command_counter(argv[i + 2]);
-	if (dup2(p->pipes[0][1], STDOUT_FILENO) < 0)
-		exit(EXIT_FAILURE);
-	close(p->pipes[0][1]);
 	if (dup2(p->fd1, STDIN_FILENO) < 0)
 		exit(EXIT_FAILURE);
+	if (dup2(p->pipes[0][1], STDOUT_FILENO) < 0)
+		exit(EXIT_FAILURE);
 	close(p->fd1);
-	close_main_pipes(p);
+	close_pipes(p);
 	p->com_path = command_path(p, p->command[0]);
 	if (p->com_path == NULL)
 	{
@@ -54,7 +53,7 @@ void	last_child_b(t_pipe *p, char **argv, char **envp, int i)
 		p->command = command_counter(argv[p->n_argc - 1]);
 	else
 		p->command = command_counter(argv[p->n_argc - 2]);
-	close_main_pipes(p);
+	close_pipes(p);
 	p->com_path = command_path(p, p->command[0]);
 	if (p->com_path == NULL)
 	{
@@ -78,7 +77,7 @@ void	middle_child_b(t_pipe *p, char **argv, char **envp, int i)
 		p->command = command_counter(argv[i + 4]);
 	else
 		p->command = command_counter(argv[i + 3]);
-	close_main_pipes(p);
+	close_pipes(p);
 	p->com_path = command_path(p, p->command[0]);
 	if (p->com_path == NULL)
 	{

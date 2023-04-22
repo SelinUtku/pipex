@@ -6,7 +6,7 @@
 /*   By: sutku <sutku@student.42heilbronn.de>       +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/04/15 22:58:04 by sutku             #+#    #+#             */
-/*   Updated: 2023/04/21 01:07:52 by sutku            ###   ########.fr       */
+/*   Updated: 2023/04/22 03:42:08 by sutku            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,7 @@ void	open_pipes(t_pipe *p)
 	}
 }
 
-void	close_main_pipes(t_pipe *p)
+void	close_pipes(t_pipe *p)
 {
 	int	i;
 
@@ -42,20 +42,6 @@ void	close_main_pipes(t_pipe *p)
 	{
 		close(p->pipes[i][0]);
 		close(p->pipes[i][1]);
-	}
-}
-
-void	close_pipes(t_pipe *p, int i)
-{
-	int	j;
-
-	j = -1;
-	while (++j < p->n_argc - 4)
-	{
-		if (i != j)
-			close(p->pipes[j][0]);
-		if (i + 1 != j)
-			close(p->pipes[j][1]);
 	}
 }
 
